@@ -7,4 +7,15 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="User_chat_background">#1E1E1E</color>
+    <color name="User_Text">#E0E0E0</color>
+
+
+    <color name="Model_chat_background">#2B2B2B</color>
+    <color name="Model_Text">#A3C9FF</color>
+
+    <color name="Timestamp_Text">#A0A0A0</color>
+
+
 </resources>

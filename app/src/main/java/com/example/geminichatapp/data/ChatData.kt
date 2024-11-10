@@ -1,9 +1,7 @@
-package com.example.geminichatapp
+package com.example.geminichatapp.data
 
 import android.graphics.Bitmap
-import com.example.geminichatapp.data.Chat
 import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.Content
 import com.google.ai.client.generativeai.type.ResponseStoppedException
 import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.Dispatchers
@@ -23,7 +21,7 @@ class ChatData() : ChatDataFromModel {
 
     override suspend fun getResponseByPrompt(prompt: String): Chat {
         val generativeModel = GenerativeModel(
-            modelName = "gemini-pro",
+            modelName = "gemini-1.0-pro",
             apiKey = api_key
         )
 
@@ -36,9 +34,9 @@ class ChatData() : ChatDataFromModel {
                 bitmap = null,
                 isFromUser = false
             )
-        }catch (e : ResponseStoppedException) {
+        }catch (e : Exception) {
             return Chat(
-                prompt = e.message ?: " error",
+                prompt = "Model error: ${e.message ?: "Unknown error"}",
                 bitmap = null,
                 isFromUser = false
             )
@@ -47,7 +45,7 @@ class ChatData() : ChatDataFromModel {
 
     override suspend fun getResponseByPromptAndBitmap(prompt: String, bitmap: Bitmap): Chat {
         val generativeModel = GenerativeModel(
-            modelName = "gemini-pro-vision",
+            modelName = "gemini-1.5-pro",
             apiKey = api_key
         )
 
@@ -65,9 +63,9 @@ class ChatData() : ChatDataFromModel {
                 bitmap = null,
                 isFromUser = false
             )
-        }catch (e:ResponseStoppedException) {
+        }catch (e:Exception) {
             return Chat(
-                prompt = e.message ?: "error",
+                prompt = "Model error: ${e.message ?: "Unknown error"}",
                 bitmap = null,
                 isFromUser = false
             )

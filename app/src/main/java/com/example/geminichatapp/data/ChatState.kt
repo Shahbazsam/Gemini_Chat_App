@@ -1,7 +1,6 @@
-package com.example.geminichatapp
+package com.example.geminichatapp.data
 
 import android.graphics.Bitmap
-import com.example.geminichatapp.data.Chat
 
 data class ChatState(
     val chatList : MutableList<Chat> = mutableListOf(),

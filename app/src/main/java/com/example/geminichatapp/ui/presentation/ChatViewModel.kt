@@ -1,9 +1,11 @@
-package com.example.geminichatapp
+package com.example.geminichatapp.ui.presentation
 
 import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.geminichatapp.data.ChatData
+import com.example.geminichatapp.data.ChatState
+import com.example.geminichatapp.data.ChatUiEvent
 import com.example.geminichatapp.data.Chat
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,6 +18,7 @@ class ChatViewModel : ViewModel() {
 
     private val _chatState = MutableStateFlow(ChatState())
     val chatState = _chatState.asStateFlow()
+
 
 
     fun onEvent(event: ChatUiEvent) {
