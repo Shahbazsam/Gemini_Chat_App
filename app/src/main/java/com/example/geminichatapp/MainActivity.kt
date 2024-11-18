@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.geminichatapp.ui.presentation.ChatBotScreen
+import com.example.geminichatapp.ui.presentation.ChatBotAppBar
 import com.example.geminichatapp.ui.theme.GeminiChatAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -14,7 +14,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GeminiChatAppTheme {
-                ChatBotScreen()
+                ChatBotAppBar()
             }
         }
     }
