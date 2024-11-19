@@ -1,4 +1,4 @@
-package com.example.geminichatapp.ui.presentation.screens
+package com.example.geminichatapp.ui.presentation
 
 import android.graphics.Bitmap
 import androidx.activity.result.PickVisualMediaRequest
@@ -7,7 +7,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -20,16 +19,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.AddAPhoto
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -40,6 +41,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -52,48 +54,34 @@ import coil.request.ImageRequest
 import coil.size.Size
 import com.example.geminichatapp.R
 import com.example.geminichatapp.ui.presentation.events.ChatUiEvent
-import com.example.geminichatapp.ui.presentation.ImagePicker
+import com.example.geminichatapp.ui.presentation.screens.ChatViewModel
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatBotScreen() {
-    Surface(
-        modifier = Modifier
-            .fillMaxSize(),
-        color = Color.Black
-    ) {
-        Scaffold(
-            topBar = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Black)
-                        .clip(RoundedCornerShape(12.dp))
-                        .height(45.dp)
-                        .padding(horizontal = 16.dp)
-
-                ) {
+fun ChatBotAppBar() {
+    Scaffold(
+        topBar = {
+            CenterAlignedTopAppBar(
+                title = {
                     Text(
-                        modifier = Modifier
-                            .align(Alignment.Center),
-                        text = stringResource(id = R.string.app_name),
-                        fontSize = 20.sp,
-                        color = Color.White
-
+                        text = stringResource(R.string.app_name),
+                        style = MaterialTheme.typography.titleLarge
                     )
-                }
-            }
-        ) {
-            ChatScreen(paddingValues = it)
-
+                },
+                colors = TopAppBarDefaults.mediumTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            )
         }
+    ) {
+        ChatScreen(paddingValues = it)
     }
 }
 
 @Composable
 fun ChatScreen(paddingValues: PaddingValues) {
 
-    val chatViewModel : ChatViewModel = viewModel(factory = ChatViewModel.Factory)
+    val chatViewModel:ChatViewModel = viewModel(factory = ChatViewModel.Factory)
     val chatState = chatViewModel.chatState.collectAsState().value
     val imagePicker = ImagePicker()
 
@@ -101,47 +89,46 @@ fun ChatScreen(paddingValues: PaddingValues) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
-            .padding(top = paddingValues.calculateTopPadding()),
+            .padding(
+                vertical = dimensionResource(R.dimen.padding_main_screen),
+                horizontal = dimensionResource(R.dimen.padding_main_screen)
+            ),
         verticalArrangement = Arrangement.Bottom
     ) {
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp)
-                .background(Color.Black),
+                .fillMaxWidth(),
             reverseLayout = true
         ) {
             itemsIndexed(chatState.chatList) { _, chat ->
-                if (chat.isFromUser){
+                if (chat.isFromUser)
                     ChatFromUser(prompt = chat.prompt , bitmap = chat.bitmap)
-                }else {
+                else
                     ChatFromModel(prompt = chat.prompt)
-                }
             }
         }
         Row (
             modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Black)
-                .padding(start = 4.dp, end = 4.dp, bottom = 18.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround
         ){
             Column {
                 bitmap?.let {
                     Image(
                         modifier = Modifier
-                            .padding(bottom = 3.dp)
-                            .clip(RoundedCornerShape(7.dp))
-                            .size(40.dp),
+                            .padding(bottom = dimensionResource(R.dimen.padding_extra_small))
+                            .clip(MaterialTheme.shapes.small)
+                            .size(dimensionResource(R.dimen.image_size)),
                         bitmap = it.asImageBitmap(),
                         contentScale = ContentScale.Crop,
-                        contentDescription = "Added Photo" )
+                        contentDescription = stringResource(R.string.added_photo)
+                    )
                 }
                 Icon(
                     modifier = Modifier
-                        .size(40.dp)
+                        .size(dimensionResource(R.dimen.image_size))
                         .clickable {
                             imagePicker.launch(
                                 PickVisualMediaRequest
@@ -151,40 +138,38 @@ fun ChatScreen(paddingValues: PaddingValues) {
                             )
                         },
                     imageVector = Icons.Rounded.AddAPhoto ,
-                    contentDescription ="Add Bitmap",
-                    tint = Color(0xFF757575)
+                    contentDescription = stringResource(R.string.add_bitmap),
+                    tint = MaterialTheme.colorScheme.primaryContainer
                 )
-
             }
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_spacer)))
             TextField(
                 modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 1.dp),
+                    .weight(1f),
                 value = chatState.prompt,
                 onValueChange = {
                     chatViewModel.onEvent(ChatUiEvent.UpdatePrompt(it))
                 },
                 placeholder = {
                     Text(
-                        text = " Ask Genie....!",
-                        color = Color(0xFF757575)
+                        text = stringResource(R.string.ask_genie),
+                        color = MaterialTheme.colorScheme.outline
                         )
                 },
                 colors = TextFieldDefaults.colors(
-                    focusedTextColor = Color(0xFFE0E0E0), // Text color when focused
-                    unfocusedTextColor = Color(0xFFE0E0E0), // Text color when unfocused
-                    cursorColor = Color(0xFFA3C9FF), // Cursor color
-                    focusedIndicatorColor = Color.Transparent, // No underline when focused
+                    focusedTextColor = MaterialTheme.colorScheme.onSurface, // Text color when focused
+                    unfocusedTextColor = MaterialTheme.colorScheme.surface, // Text color when unfocused
+                    cursorColor = MaterialTheme.colorScheme.tertiaryContainer, // Cursor color
+                    focusedIndicatorColor = MaterialTheme.colorScheme.tertiaryContainer, // No underline when focused
                     unfocusedIndicatorColor = Color.Transparent, // No underline when unfocused
-                    focusedContainerColor = Color(0xFF1E1E1E), // Background color when focused
-                    unfocusedContainerColor = Color(0xFF1E1E1E) // Background color when unfocused
+                    focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer, // Background color when focused
+                    unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer // Background color when unfocused
                 )
             )
-            Spacer(modifier = Modifier.width(10.dp))
+            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_spacer)))
             Icon(
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(dimensionResource(R.dimen.image_size))
                     .clickable {
                         chatViewModel.onEvent(
                             ChatUiEvent.SendPrompt(
@@ -194,62 +179,62 @@ fun ChatScreen(paddingValues: PaddingValues) {
                         )
                     },
                 imageVector = Icons.AutoMirrored.Rounded.Send,
-                contentDescription = "Send Prompt",
-                tint = Color(0xFF757575)
+                contentDescription = stringResource(R.string.send_prompt),
+                tint = MaterialTheme.colorScheme.primaryContainer
             )
-
         }
-
     }
 }
 
 @Composable
 fun ChatFromUser(prompt : String , bitmap : Bitmap?) {
-
     Column(
         modifier = Modifier
-            .padding(start = 100.dp, bottom = 20.dp)
+            .padding(start = dimensionResource(R.dimen.padding_large),
+                bottom = dimensionResource(R.dimen.padding_chat_model)
+            )
     ) {
         bitmap?.let {
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(280.dp)
-                    .clip(RoundedCornerShape(14.dp))
-                    .padding(bottom = 2.dp),
+                    .clip(MaterialTheme.shapes.medium),
+//                    .padding(bottom = 2.dp),
                 contentScale = ContentScale.Crop,
                 bitmap = it.asImageBitmap(),
-                contentDescription = "image"
+                contentDescription = stringResource(R.string.image)
             )
         }
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 4.dp , bottom = 4.dp , top = 4.dp , end = 4.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(colorResource(id = R.color.User_chat_background)),
-                text = prompt,
-                color = colorResource(id = R.color.User_Text),
-                fontSize = 18.sp
-            )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(dimensionResource(R.dimen.padding_extra_small))
+                .clip(MaterialTheme.shapes.medium)
+                .background(colorResource(R.color.User_chat_background)),
+            text = prompt,
+            color = colorResource(R.color.User_Text),
+            fontSize = 18.sp
+        )
     }
-
 }
 
 @Composable
 fun ChatFromModel(prompt: String) {
     Column(
         modifier = Modifier
-            .padding(end = 100.dp, bottom = 20.dp)
+            .padding(end = dimensionResource(R.dimen.padding_large),
+                bottom = dimensionResource(R.dimen.padding_chat_model)
+            )
     ) {
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 4.dp , bottom = 4.dp , top = 4.dp , end = 4.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(colorResource(id = R.color.Model_chat_background)),
+                .padding(dimensionResource(R.dimen.padding_extra_small))
+                .clip(MaterialTheme.shapes.medium)
+                .background(colorResource(R.color.Model_chat_background)),
             text = prompt,
-            color = colorResource(id = R.color.Model_Text),
+            color = colorResource(R.color.Model_Text),
             fontSize = 18.sp
         )
     }
@@ -277,5 +262,5 @@ fun getBitmap(chatViewModel: ChatViewModel) : Bitmap? {
 @Preview(showBackground = true)
 @Composable
 fun ChatPreview() {
-    ChatBotScreen()
+    ChatBotAppBar()
 }
