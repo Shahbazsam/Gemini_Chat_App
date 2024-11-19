@@ -1,4 +1,4 @@
-package com.example.geminichatapp.data
+package com.example.geminichatapp.ui.presentation.events
 
 import android.graphics.Bitmap
 

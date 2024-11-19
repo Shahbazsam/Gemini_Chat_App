@@ -10,7 +10,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.geminichatapp.data.ChatUiEvent
+import com.example.geminichatapp.ui.presentation.events.ChatUiEvent
+import com.example.geminichatapp.ui.presentation.screens.ChatViewModel
 import kotlinx.coroutines.launch
 
 

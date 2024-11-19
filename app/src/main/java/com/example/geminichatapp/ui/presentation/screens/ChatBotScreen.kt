@@ -1,4 +1,4 @@
-package com.example.geminichatapp.ui.presentation
+package com.example.geminichatapp.ui.presentation.screens
 
 import android.graphics.Bitmap
 import androidx.activity.result.PickVisualMediaRequest
@@ -51,7 +51,8 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
 import com.example.geminichatapp.R
-import com.example.geminichatapp.data.ChatUiEvent
+import com.example.geminichatapp.ui.presentation.events.ChatUiEvent
+import com.example.geminichatapp.ui.presentation.ImagePicker
 
 
 @Composable
@@ -92,8 +93,7 @@ fun ChatBotScreen() {
 @Composable
 fun ChatScreen(paddingValues: PaddingValues) {
 
-
-    val chatViewModel = viewModel<ChatViewModel>()
+    val chatViewModel : ChatViewModel = viewModel(factory = ChatViewModel.Factory)
     val chatState = chatViewModel.chatState.collectAsState().value
     val imagePicker = ImagePicker()
 
