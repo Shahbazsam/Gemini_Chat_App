@@ -47,8 +47,6 @@ class ChatViewModel(private val chatsRepository: ChatsRepository) : ViewModel() 
     fun onEvent(event: ChatUiEvent) {
         when(event) {
             is ChatUiEvent.SendPrompt -> {
-
-
                 addPromptToChatList(event.prompt , event.bitmap)
                 val byteArray = bitmapToByteArray(event.bitmap)
                 addPromptToChatDatabase(event.prompt , byteArray)
@@ -100,17 +98,16 @@ class ChatViewModel(private val chatsRepository: ChatsRepository) : ViewModel() 
     private fun getResponseByPrompt(prompt : String) {
         viewModelScope.launch {
             val chat = chatData.getResponseByPrompt(prompt)
-            val response = parseText(chat)
             _chatState.update {
                 it.copy(
                     chatList = it.chatList.toMutableList().apply {
-                        add(0 , Chat(response , null, false))
+                        add(0 , Chat(chat , null, false))
                     }
                 )
             }
             val chatHistory = ChatHistory(
                 conversationId = latestConversationId,
-                prompt = response,
+                prompt = chat,
                 byteArray = null,
                 isFromUser = false
             )
@@ -119,33 +116,24 @@ class ChatViewModel(private val chatsRepository: ChatsRepository) : ViewModel() 
         }
     }
 
-
     private fun getResponseByPromptAndBitmap(prompt: String  , bitmap: Bitmap) {
         viewModelScope.launch {
             val chat = chatData.getResponseByPromptAndBitmap(prompt , bitmap)
-            val response = parseText(chat)
             _chatState.update {
                 it.copy(
                    chatList = it.chatList.toMutableList().apply {
-                       add(0 , Chat(response , null, false))
+                       add(0 , Chat(chat , null, false))
                    }
                 )
             }
             val chatHistory = ChatHistory(
                 conversationId = latestConversationId,
-                prompt = response,
+                prompt = chat,
                 byteArray = null,
                 isFromUser = false
             )
             chatsRepository.insertChat(chatHistory)
         }
-    }
-    private fun parseText(rawText : String) : String {
-        return rawText
-            .replace(Regex("\\*\\*([^*]+)\\*\\*"), "$1") // Remove double asterisks (**bold text** -> bold text)
-            .replace(Regex("\\* ([^\\n]+)"), "• $1")     // Convert single * list items to bullet points
-            .replace(Regex("\\[([^\\]]+)]\\(([^)]+)\\)"), "$1 ($2)") // Format links [text](link) -> text (link)
-            .trim()
     }
 
     private fun bitmapToByteArray(bitmap: Bitmap?) : ByteArray? {

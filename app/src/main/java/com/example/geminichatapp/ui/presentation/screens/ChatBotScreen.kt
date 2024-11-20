@@ -1,12 +1,15 @@
 package com.example.geminichatapp.ui.presentation
 
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,6 +22,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.AddAPhoto
@@ -43,6 +47,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -188,7 +197,7 @@ fun ChatScreen(paddingValues: PaddingValues) {
 
 @Composable
 fun ChatFromUser(prompt : String , bitmap : Bitmap?) {
-    Column(
+    Box(
         modifier = Modifier
             .padding(start = dimensionResource(R.dimen.padding_large),
                 bottom = dimensionResource(R.dimen.padding_chat_model)
@@ -221,23 +230,78 @@ fun ChatFromUser(prompt : String , bitmap : Bitmap?) {
 
 @Composable
 fun ChatFromModel(prompt: String) {
-    Column(
+    val styledText = parseRichText(prompt)
+    Box(
         modifier = Modifier
             .padding(end = dimensionResource(R.dimen.padding_large),
                 bottom = dimensionResource(R.dimen.padding_chat_model)
             )
     ) {
-        Text(
+        ClickableText(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(dimensionResource(R.dimen.padding_extra_small))
                 .clip(MaterialTheme.shapes.medium)
-                .background(colorResource(R.color.Model_chat_background)),
-            text = prompt,
-            color = colorResource(R.color.Model_Text),
-            fontSize = 18.sp
+                .background(colorResource(R.color.User_Text)),
+            text = styledText,
+            /*color = colorResource(R.color.Model_Text),
+            fontSize = 18.sp,*/
+            onClick = { offset ->
+                styledText.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                    .firstOrNull()?.let { annotation ->
+                        val url = annotation.item
+                        openLinkInBrowser(url)
+                    }
+            },
         )
     }
+}
+
+@Composable
+private fun parseRichText(rawText: String): AnnotatedString {
+    val builder = AnnotatedString.Builder()
+
+    val lines = rawText.lines()
+    for (line in lines) {
+        when {
+            line.startsWith("**") && line.endsWith(":**") -> {
+                // Bold headings
+                builder.withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                    append(line.removeSurrounding("**").trim())
+                }
+                builder.append("\n")
+            }
+            line.startsWith("* ") -> {
+                // Bullet points
+                builder.append("• ")
+                builder.append(line.removePrefix("* ").trim())
+                builder.append("\n")
+            }
+            Regex("\\[([^\\]]+)]\\(([^)]+)\\)").containsMatchIn(line) -> {
+                // Links [text](url)
+                val match = Regex("\\[([^\\]]+)]\\(([^)]+)\\)").find(line)
+                if (match != null) {
+                    val (text, url) = match.destructured
+                    builder.pushStringAnnotation(tag = "URL", annotation = url)
+                    builder.withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
+                        append(text)
+                    }
+                    builder.pop()
+                    builder.append("\n")
+                }
+            }
+            line.isNotBlank() -> {
+                // Plain text
+                builder.append(line.trim())
+                builder.append("\n")
+            }
+        }
+    }
+    return builder.toAnnotatedString()
+}
+fun openLinkInBrowser(url: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+    //context.startActivity(intent) // Un-comment when inside an Activity/Context
 }
 
 @Composable
