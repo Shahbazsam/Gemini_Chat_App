@@ -24,15 +24,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.AddAPhoto
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
@@ -51,32 +47,11 @@ import coil.compose.AsyncImagePainter
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import coil.size.Size
+import com.example.geminichatapp.ChatBotAppBar
 import com.example.geminichatapp.R
 import com.example.geminichatapp.ui.presentation.ImagePicker
 import com.example.geminichatapp.ui.presentation.events.ChatState
 import com.example.geminichatapp.ui.presentation.events.ChatUiEvent
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ChatBotAppBar() {
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(R.string.app_name),
-                        style = MaterialTheme.typography.titleLarge
-                    )
-                },
-                colors = TopAppBarDefaults.mediumTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            )
-        }
-    ) {
-        ChatScreen(paddingValues = it)
-    }
-}
 
 @Composable
 fun ChatScreen(paddingValues: PaddingValues) {
@@ -263,10 +238,4 @@ fun getBitmap(chatViewModel: ChatViewModel) : Bitmap? {
     }
 
     return null
-}
-
-@Preview(showBackground = true)
-@Composable
-fun ChatPreview() {
-    ChatBotAppBar()
 }
