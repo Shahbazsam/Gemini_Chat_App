@@ -2,7 +2,11 @@
     <string name="app_name">Gemini Chat App</string>
     <string name="added_photo">Added Photo</string>
     <string name="add_bitmap">Add Bitmap</string>
-    <string name="ask_genie">Ask Genie...!</string>
+    <string name="ask_genie">Ask Genie…!</string>
     <string name="send_prompt">Send Prompt</string>
     <string name="image">image</string>
+
+    <string name="back_button">Back Button</string>
+    <string name="assistant">Assistant</string>
+    <string name="rocket">Rocket</string>
 </resources>

@@ -40,12 +40,12 @@ val Typography = Typography(
         fontSize = 20.sp
     ),
     titleMedium = TextStyle(
-        fontFamily = OldStandart,
-        fontWeight = FontWeight.Bold,
+        fontFamily = Alata,
+        fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
     ),
     bodyMedium = TextStyle(
-        fontFamily = OldStandart,
+        fontFamily = Actor,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
         lineHeight = 20.sp,
