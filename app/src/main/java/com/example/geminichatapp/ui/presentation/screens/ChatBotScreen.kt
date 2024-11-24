@@ -57,9 +57,14 @@ import com.example.geminichatapp.R
 import com.example.geminichatapp.ui.presentation.ImagePicker
 import com.example.geminichatapp.ui.presentation.events.ChatState
 import com.example.geminichatapp.ui.presentation.events.ChatUiEvent
+import com.example.geminichatapp.ui.presentation.events.UserData
 
 @Composable
-fun ChatScreen(paddingValues: PaddingValues) {
+fun ChatScreen(
+    userData: UserData?,
+    onSignOut : ()->Unit,
+    paddingValues: PaddingValues
+) {
     val chatViewModel: ChatViewModel = viewModel(factory = ChatViewModel.Factory)
     val chatState = chatViewModel.chatState.collectAsState().value
     val imagePicker = ImagePicker()

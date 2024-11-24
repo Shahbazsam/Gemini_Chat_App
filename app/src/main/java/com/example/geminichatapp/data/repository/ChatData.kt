@@ -2,7 +2,6 @@ package com.example.geminichatapp.data.repository
 
 import android.graphics.Bitmap
 import com.example.geminichatapp.BuildConfig
-import com.example.geminichatapp.data.model.Chat
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.Dispatchers
@@ -10,7 +9,6 @@ import kotlinx.coroutines.withContext
 
 
 interface ChatDataFromModel {
-
     suspend fun getResponseByPrompt( prompt : String) : String
     suspend fun getResponseByPromptAndBitmap( prompt : String , bitmap: Bitmap) : String
 }
@@ -22,7 +20,7 @@ class ChatData() : ChatDataFromModel {
 
     override suspend fun getResponseByPrompt(prompt: String): String {
         val generativeModel = GenerativeModel(
-            modelName = "gemini-1.0-pro",
+            modelName = "gemini-1.5-pro",
             apiKey = api_key
         )
 

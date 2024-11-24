@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1030318152954",
+    "project_id": "geminichatapp-7fbe3",
+    "storage_bucket": "geminichatapp-7fbe3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1030318152954:android:94cc98b9ce185bafd13d43",
+        "android_client_info": {
+          "package_name": "com.example.geminichatapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1030318152954-fnnjc7h46g5tcdavp0gnleed0bveofgt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.geminichatapp",
+            "certificate_hash": "ea1503ca8d9c53b0229a81e4c50ab3454581a9f1"
+          }
+        },
+        {
+          "client_id": "1030318152954-kjbujst1qg6q2o0kme3216bo56nj0d84.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4oZ7K7jXaWXZbiT-iI9IBIW651eIvTVo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1030318152954-kjbujst1qg6q2o0kme3216bo56nj0d84.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

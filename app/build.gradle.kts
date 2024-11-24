@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     id("com.google.devtools.ksp") version "1.9.20-1.0.14"
+    id("kotlin-kapt")
+    id("com.google.gms.google-services") version "4.4.0"
 }
 
 android {
@@ -90,6 +92,11 @@ dependencies {
     implementation("androidx.room:room-runtime:2.6.0")
     ksp("androidx.room:room-compiler:2.6.0")
     implementation("androidx.room:room-ktx:2.6.0")
+
+
+    //firebase
+    implementation("com.google.firebase:firebase-auth-ktx:23.1.0")
+    implementation("com.google.android.gms:play-services-auth:21.2.0")
 
 
 }
