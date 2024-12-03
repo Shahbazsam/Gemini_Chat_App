@@ -25,6 +25,15 @@ android {
     buildFeatures {
         buildConfig = true
     }
+    signingConfigs {
+        create("release") {
+            storeFile = file("C:\\Users\\mdsha\\release-key.jks")  // Update with the actual path to your keystore
+            storePassword = "Shahbaz@7896"
+            keyAlias = "my-key-alias"
+            keyPassword = "Shahbaz@7896"
+        }
+    }
+
 
     buildTypes {
         debug {
@@ -34,7 +43,8 @@ android {
             )
         }
         release {
-            isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
