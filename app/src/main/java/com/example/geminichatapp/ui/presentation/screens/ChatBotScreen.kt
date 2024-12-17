@@ -1,8 +1,7 @@
 package com.example.geminichatapp.ui.presentation.screens
 
-import android.content.Intent
+
 import android.graphics.Bitmap
-import android.net.Uri
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -28,11 +27,17 @@ import androidx.compose.material.icons.automirrored.rounded.Send
 import androidx.compose.material.icons.rounded.AddAPhoto
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,11 +46,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -58,6 +59,9 @@ import com.example.geminichatapp.ui.presentation.ImagePicker
 import com.example.geminichatapp.ui.presentation.events.ChatState
 import com.example.geminichatapp.ui.presentation.events.ChatUiEvent
 import com.example.geminichatapp.ui.presentation.events.UserData
+import com.example.geminichatapp.ui.theme.GeminiChatAppTheme
+import dev.jeziellago.compose.markdowntext.MarkdownText
+import kotlinx.coroutines.delay
 
 @Composable
 fun ChatScreen(
@@ -86,7 +90,8 @@ fun ChatScreen(
                 .fillMaxWidth(),
             reverseLayout = true
         ) {
-            itemsIndexed(chatState.chatList) { _, chat ->
+            itemsIndexed(chatState.chatList, key = {  _ , message -> message.prompt }) { _, chat ->
+                
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -141,9 +146,11 @@ fun PromptField(
     onSend: () -> Unit,
     onImagePickerLaunch: () -> Unit
 ) {
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .clip(RoundedCornerShape(16.dp))
             .padding(top = dimensionResource(R.dimen.padding_extra_small)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround
@@ -170,8 +177,10 @@ fun PromptField(
             )
         }
         Spacer(modifier = Modifier.width(dimensionResource(R.dimen.padding_spacer)))
-        TextField(
-            modifier = Modifier.weight(1f),
+        OutlinedTextField(
+            modifier = Modifier
+                .clip(RoundedCornerShape(32.dp))
+                .weight(1f),
             value = chatState.prompt,
             onValueChange = onPromptChange,
             placeholder = {
@@ -226,59 +235,26 @@ fun ChatFromUser(prompt : String , bitmap : Bitmap?) {
 
 @Composable
 fun ChatFromModel(prompt: String) {
-    val parsedText = parseRichText(prompt)
-    Text(
-        text = parsedText,
-        style = MaterialTheme.typography.bodyMedium
-    )
-}
+    var displayedText by remember { mutableStateOf("") }
 
-@Composable
-private fun parseRichText(rawText: String): AnnotatedString {
-    val builder = AnnotatedString.Builder()
 
-    val lines = rawText.lines()
-    for (line in lines) {
-        when {
-            line.startsWith("**") && line.endsWith(":**") -> {
-                // Bold headings
-                builder.withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
-                    append(line.removeSurrounding("**").trim())
-                }
-                builder.append("\n")
-            }
-            line.startsWith("* ") -> {
-                // Bullet points
-                builder.append("• ")
-                builder.append(line.removePrefix("* ").trim())
-                builder.append("\n")
-            }
-            Regex("\\[([^\\]]+)]\\(([^)]+)\\)").containsMatchIn(line) -> {
-                // Links [text](url)
-                val match = Regex("\\[([^\\]]+)]\\(([^)]+)\\)").find(line)
-                if (match != null) {
-                    val (text, url) = match.destructured
-                    builder.pushStringAnnotation(tag = "URL", annotation = url)
-                    builder.withStyle(SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
-                        append(text)
-                    }
-                    builder.pop()
-                    builder.append("\n")
-                }
-            }
-            line.isNotBlank() -> {
-                // Plain text
-                builder.append(line.trim())
-                builder.append("\n")
-            }
+    LaunchedEffect(prompt) {
+        displayedText = ""
+        val characters =  prompt.toCharArray()
+        for (char in characters) {
+            displayedText += char.toString()
+            delay(1)
         }
     }
-    return builder.toAnnotatedString()
+    MarkdownText(
+        markdown = prompt,
+        isTextSelectable = true,
+        fontResource = R.font.actor_regular,
+        style = MaterialTheme.typography.bodyMedium
+    )
+
 }
-fun openLinkInBrowser(url: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-    //context.startActivity(intent) // Un-comment when inside an Activity/Context
-}
+
 
 @Composable
 fun getBitmap(chatViewModel: ChatViewModel) : Bitmap? {
@@ -296,6 +272,18 @@ fun getBitmap(chatViewModel: ChatViewModel) : Bitmap? {
     }
 
     return null
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ChatScreenPreview() {
+    GeminiChatAppTheme {
+        ChatScreen(
+            userData = null,
+            onSignOut = {},
+            paddingValues = PaddingValues(4.dp)
+        )
+    }
 }
 
 
