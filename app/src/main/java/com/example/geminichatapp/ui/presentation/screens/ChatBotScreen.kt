@@ -2,6 +2,7 @@ package com.example.geminichatapp.ui.presentation.screens
 
 
 import android.graphics.Bitmap
+import android.util.Log
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -91,7 +92,9 @@ fun ChatScreen(
             reverseLayout = true
         ) {
             itemsIndexed(chatState.chatList, key = {  _ , message -> message.prompt }) { _, chat ->
-                
+                Log.d("last chat" , chatState.chatList.first().toString())
+                val shouldAnimate = chat == chatState.chatList.first() && !chat.isFromUser
+
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -112,7 +115,7 @@ fun ChatScreen(
                             .padding(dimensionResource(R.dimen.padding_medium)),
                     ) {
                         if (chat.isFromUser) ChatFromUser(prompt = chat.prompt, bitmap = chat.bitmap)
-                            else ChatFromModel(prompt = chat.prompt)
+                            else ChatFromModel(prompt = chat.prompt , shouldAnimate = shouldAnimate)
                     }
                 }
             }
@@ -234,20 +237,24 @@ fun ChatFromUser(prompt : String , bitmap : Bitmap?) {
 }
 
 @Composable
-fun ChatFromModel(prompt: String) {
+fun ChatFromModel(prompt: String , shouldAnimate : Boolean) {
     var displayedText by remember { mutableStateOf("") }
 
 
-    LaunchedEffect(prompt) {
-        displayedText = ""
-        val characters =  prompt.toCharArray()
-        for (char in characters) {
-            displayedText += char.toString()
-            delay(1)
+    LaunchedEffect(shouldAnimate) {
+        if (shouldAnimate) {
+            displayedText = ""
+            val characters = prompt.toCharArray()
+            for (char in characters) {
+                displayedText += char.toString()
+                delay(1)
+            }
+        } else {
+            displayedText = prompt
         }
     }
     MarkdownText(
-        markdown = prompt,
+        markdown = displayedText,
         isTextSelectable = true,
         fontResource = R.font.actor_regular,
         style = MaterialTheme.typography.bodyMedium
