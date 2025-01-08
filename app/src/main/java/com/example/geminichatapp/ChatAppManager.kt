@@ -89,7 +89,7 @@ fun AppManager(
 
     Scaffold(
         topBar = {
-            if (currentScreen != NavigationRoutes.Splash) {
+            if (currentScreen != NavigationRoutes.Splash  &&  currentScreen != NavigationRoutes.SignIn ) {
                 ChatBotAppBar(
                     currentScreen = currentScreen,
                     canNavigateBack = navController.previousBackStackEntry != null,

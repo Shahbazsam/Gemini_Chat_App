@@ -3,10 +3,13 @@ package com.example.geminichatapp.ui.presentation.screens
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.VectorConverter
+import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
@@ -19,6 +22,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Modifier
@@ -26,11 +30,57 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import com.example.geminichatapp.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+
+
+@Composable
+fun SplashScreen(
+    onNextScreen: () -> Unit
+) {
+    val size = remember { Animatable(75.dp, Dp.VectorConverter) }
+
+    // Animation for scaling (bigger and smaller)
+    LaunchedEffect(Unit) {
+        launch {
+            while (true) {
+                size.animateTo(
+                    targetValue = 100.dp,
+                    animationSpec = tween(durationMillis = 600, easing = LinearEasing)
+                )
+                size.animateTo(
+                    targetValue = 75.dp,
+                    animationSpec = tween(durationMillis = 600, easing = LinearEasing)
+                )
+            }
+        }
+
+        // Wait for a few cycles before transitioning
+        delay(3000)
+        onNextScreen()
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = R.drawable.assistant),
+            contentDescription = stringResource(R.string.assistant),
+            colorFilter = ColorFilter.tint(Color.White),
+            modifier = Modifier.size(size.value)
+        )
+    }
+}
+
+
+/*
 
 @Composable
 fun SplashScreen(
@@ -134,4 +184,4 @@ fun SplashScreen(
             )
         }
     }
-}
+}*/
