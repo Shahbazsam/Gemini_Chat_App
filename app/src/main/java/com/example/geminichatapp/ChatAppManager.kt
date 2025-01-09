@@ -39,36 +39,6 @@ import com.example.geminichatapp.ui.presentation.sign_in.SignInViewModel
 import com.google.android.gms.auth.api.identity.Identity
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ChatBotAppBar(
-    currentScreen: NavigationRoutes,
-    canNavigateBack: Boolean,
-    navigateUp: () -> Unit,
-) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = stringResource(currentScreen.title),
-                style = MaterialTheme.typography.titleLarge
-            )
-        },
-        colors = TopAppBarDefaults.mediumTopAppBarColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer
-        ),
-        navigationIcon = {
-            if (canNavigateBack) {
-                IconButton(onClick = navigateUp) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(R.string.back_button)
-                    )
-                }
-            }
-        }
-    )
-}
-
 @Composable
 fun AppManager(
     navController: NavHostController = rememberNavController()
@@ -88,7 +58,7 @@ fun AppManager(
     )
 
     Scaffold(
-        topBar = {
+       /* topBar = {
             if (currentScreen != NavigationRoutes.Splash  &&  currentScreen != NavigationRoutes.SignIn ) {
                 ChatBotAppBar(
                     currentScreen = currentScreen,
@@ -96,7 +66,7 @@ fun AppManager(
                     navigateUp = { navController.navigateUp() }
                 )
             }
-        }
+        }*/
     ) { innerPadding ->
         NavHost(
             navController = navController,
