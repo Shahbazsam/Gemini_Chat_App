@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.geminichatapp.data.model.ChatHistory
-import com.example.geminichatapp.data.repository.ChatData
+
 import kotlinx.coroutines.flow.Flow
 
 
@@ -17,8 +17,11 @@ interface ChatDao {
     @Query("SELECT MAX(conversationId) FROM chats")
     suspend fun getLatestConversationId(): Int?
 
-    @Query("SELECT * FROM chats WHERE conversationId = :conversationId ORDER BY id ")
-    fun getChatsForConversation(conversationId: Long): Flow<List<ChatHistory>>
+    @Query("SELECT * FROM chats ORDER BY conversationId DESC, id DESC")
+    fun getAllConversationsSorted(): Flow<List<ChatHistory>>
+
+    @Query("SELECT * FROM chats WHERE conversationId = :conversationId ORDER BY id ASC ")
+    fun getChatsForConversation(conversationId: Int): Flow<List<ChatHistory>>
 
     @Query("DELETE FROM chats WHERE conversationId = :conversationId")
     suspend fun deleteChatsForConversation(conversationId: Long)

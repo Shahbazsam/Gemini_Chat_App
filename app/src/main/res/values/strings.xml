@@ -11,4 +11,6 @@
     <string name="rocket">Rocket</string>
     <string name="web_client_Id">1030318152954-kjbujst1qg6q2o0kme3216bo56nj0d84.apps.googleusercontent.com</string>
     <string name="signin">SignIn</string>
+    <string name="history">History</string>
+    <string name="historychat">HistoryChat</string>
 </resources>

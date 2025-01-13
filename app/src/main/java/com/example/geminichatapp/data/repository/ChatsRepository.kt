@@ -9,10 +9,10 @@ interface ChatsRepository {
 
     suspend fun insertChat(chat: ChatHistory)
     suspend fun getLatestConversationId(): Int?
-    fun getChatsForConversation(conversationId: Long): Flow<List<ChatHistory>>
+    fun getChatsForConversation(conversationId: Int): Flow<List<ChatHistory>>
     suspend fun deleteChatsForConversation(conversationId: Long)
     suspend fun deleteSingleMessage(conversationID : Long ,chatId: Long)
-
+    fun getAllConversationsSorted() : Flow<List<ChatHistory>>
 
 }
 
@@ -27,7 +27,7 @@ interface ChatsRepository {
          return chatDao.getLatestConversationId()
      }
 
-     override fun getChatsForConversation(conversationId: Long): Flow<List<ChatHistory>> {
+     override fun getChatsForConversation(conversationId: Int): Flow<List<ChatHistory>> {
          return chatDao.getChatsForConversation(conversationId)
      }
 
@@ -37,6 +37,10 @@ interface ChatsRepository {
 
      override suspend fun deleteSingleMessage(conversationID: Long, chatId: Long) {
          chatDao.deleteSingleMessage(conversationID , chatId)
+     }
+
+     override fun getAllConversationsSorted() : Flow<List<ChatHistory>> {
+         return chatDao.getAllConversationsSorted()
      }
 
 

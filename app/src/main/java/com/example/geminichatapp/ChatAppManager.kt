@@ -5,22 +5,12 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
@@ -28,10 +18,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.geminichatapp.data.model.NavigationRoutes
 import com.example.geminichatapp.ui.presentation.screens.ChatScreen
+import com.example.geminichatapp.ui.presentation.screens.HistoryChatList
+import com.example.geminichatapp.ui.presentation.screens.HistoryScreen
+import com.example.geminichatapp.ui.presentation.screens.HistoryViewModel
 import com.example.geminichatapp.ui.presentation.screens.SplashScreen
 import com.example.geminichatapp.ui.presentation.sign_in.GoogleAuthUiClient
 import com.example.geminichatapp.ui.presentation.sign_in.SignInScreen
@@ -52,21 +44,9 @@ fun AppManager(
             oneTapClient = Identity.getSignInClient(context)
         )
     }
-    val backStackEntry by navController.currentBackStackEntryAsState()
-    val currentScreen = NavigationRoutes.valueOf(
-        backStackEntry?.destination?.route ?: NavigationRoutes.Chat.name
-    )
+    val historyViewModel : HistoryViewModel = viewModel(factory = HistoryViewModel.factory)
 
     Scaffold(
-       /* topBar = {
-            if (currentScreen != NavigationRoutes.Splash  &&  currentScreen != NavigationRoutes.SignIn ) {
-                ChatBotAppBar(
-                    currentScreen = currentScreen,
-                    canNavigateBack = navController.previousBackStackEntry != null,
-                    navigateUp = { navController.navigateUp() }
-                )
-            }
-        }*/
     ) { innerPadding ->
         NavHost(
             navController = navController,
@@ -131,6 +111,16 @@ fun AppManager(
             composable(route = NavigationRoutes.Chat.name) {
                 ChatScreen(
                     userData = googleAuthUiClient.getSignedInUser(),
+                    paddingValues = innerPadding,
+                    onNavigate = {
+                        navController.navigate(NavigationRoutes.History.name)
+                    }
+
+                )
+            }
+            composable(route = NavigationRoutes.History.name) {
+                HistoryScreen(
+                    historyViewModel = historyViewModel,
                     onSignOut = {
                         lifecycleScope.launch {
                             googleAuthUiClient.signOut()
@@ -139,10 +129,31 @@ fun AppManager(
                                 "signed Out Successfully",
                                 Toast.LENGTH_LONG
                             ).show()
-                            navController.popBackStack()
+                            navController.navigate(NavigationRoutes.SignIn.name) {
+                                popUpTo(NavigationRoutes.SignIn.name) { inclusive = true}
+                            }
                         }
                     },
-                    paddingValues = innerPadding)
+                    userData = googleAuthUiClient.getSignedInUser(),
+                    onNavigate = {
+                        navController.navigate(NavigationRoutes.HistoryChat.name)
+                    },
+                    onBackPress = {
+                        navController.navigate(NavigationRoutes.Chat.name)
+                    }
+                )
+            }
+            composable(route = NavigationRoutes.HistoryChat.name) {
+               HistoryChatList(
+                   historyViewModel = historyViewModel,
+                   paddingValues = innerPadding,
+                   onNavigate = {
+                       navController.navigate(NavigationRoutes.History.name)
+                   },
+                   onBackPress = {
+                       navController.navigate(NavigationRoutes.Chat.name)
+                   }
+               )
             }
         }
     }

@@ -45,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -72,7 +73,7 @@ import kotlinx.coroutines.delay
 @Composable
 fun ChatScreen(
     userData: UserData?,
-    onSignOut : ()->Unit,
+    onNavigate : ()-> Unit,
     paddingValues: PaddingValues
 ) {
 
@@ -97,6 +98,32 @@ fun ChatScreen(
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF1E1E1E)),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.side_panel),
+                contentDescription = "side panel",
+                tint = Color.White,
+                modifier = Modifier
+                    .clickable {
+                        onNavigate()
+                    }
+                    .size(40.dp)
+            )
+            Spacer(modifier = Modifier.weight(0.75f))
+            Image(
+                modifier = Modifier.size(38.dp),
+                painter = painterResource(R.drawable.assistant),
+                contentDescription = "Logo",
+                colorFilter = ColorFilter.tint(Color.White)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+        }
+
         if(chatState.chatList.isEmpty()) {
             Column(
                 modifier = Modifier
@@ -105,14 +132,13 @@ fun ChatScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "Ask me anything!",
+                    text = "   Welcome ${userData?.userName} \n How Can I Help You Today ?",
                     style = MaterialTheme.typography.titleLarge.copy(
                         color = Color(0xFFE0E0E0),
                         fontWeight = FontWeight.Bold
                     ),
                 )
             }
-            //GeniePlaceholder(isTextFieldFocused = textFieldFocused)
             } else {
             LazyColumn(
                 modifier = Modifier
@@ -276,7 +302,7 @@ fun ChatFromUser(prompt : String , bitmap : Bitmap?) {
             Text(
                 text = prompt,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color(0xFFE0E0E0), // Off-white text for readability
+                color = Color(0xFFE0E0E0),
                 modifier = Modifier
                     .background(Color(0xFF3A3A3A), RoundedCornerShape(8.dp))
                     .padding(dimensionResource(R.dimen.padding_small))
@@ -286,7 +312,7 @@ fun ChatFromUser(prompt : String , bitmap : Bitmap?) {
         Text(
             text = "You",
             style = MaterialTheme.typography.labelSmall,
-            color = Color(0xFF8D8D8D), // Subtle gray text for "You"
+            color = Color(0xFF8D8D8D),
             modifier = Modifier.padding(end = dimensionResource(R.dimen.padding_small))
         )
     }
@@ -321,6 +347,7 @@ fun ChatFromModel(prompt: String , shouldAnimate : Boolean) {
                 .size(40.dp)
                 .clip(CircleShape)
                 .background(Color(0xFF2B2B2B)), // Matches the dark theme
+            colorFilter = ColorFilter.tint(color = Color.White),
             painter = painterResource(R.drawable.assistant), // Replace with your logo resource
             contentDescription = "logo",
             contentScale = ContentScale.Crop
@@ -358,20 +385,5 @@ fun getBitmap(chatViewModel: ChatViewModel) : Bitmap? {
     return null
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ChatScreenPreview() {
-    GeminiChatAppTheme {
-        ChatScreen(
-            userData = UserData(
-                userId = "1",
-                userName = null,
-                profilePicture = ""
-            ),
-            onSignOut = {},
-            paddingValues = PaddingValues(4.dp)
-        )
-    }
-}
 
 
