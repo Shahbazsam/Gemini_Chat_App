@@ -1,13 +1,14 @@
-Here's the final **README.md** with the **API key setup** simplified:  
-
----
 
 # 📜 Gemini Chat App  
 🔥 AI-powered chatbot using **Google's Gemini API**, built with **Jetpack Compose** and **Firebase Authentication**.  
 
 ![Gemini Chat App Screenshot](your-screenshot-url.png)  
 
-📺 **[Demo Video](https://drive.google.com/file/d/1y9mKUOyMQfso1ncqJJ65oS8ll_453fJO/view?usp=sharing)**  
+📺 **[Demo Video](
+
+https://github.com/user-attachments/assets/fcbd2fc4-0033-45d2-b405-80e731456f01
+
+ )**  
 
 ---
 
