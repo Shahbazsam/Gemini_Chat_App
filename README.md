@@ -2,14 +2,14 @@
 # 📜 Gemini Chat App  
 🔥 AI-powered chatbot using **Google's Gemini API**, built with **Jetpack Compose** and **Firebase Authentication**.  
 
-![Gemini Chat App Screenshot](your-screenshot-url.png)  
+
 
 📺 **[Demo Video](
 
 https://github.com/user-attachments/assets/fcbd2fc4-0033-45d2-b405-80e731456f01
 
  )**  
-
+**Recorded On Emulator, will be smoother and faster on Your Physical Device**
 ---
 
 ## 🚀 Features  
