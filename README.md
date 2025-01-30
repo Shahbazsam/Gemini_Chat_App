@@ -5,7 +5,11 @@
 
 
 📺 **Demo Video**
-https://github.com/user-attachments/assets/fcbd2fc4-0033-45d2-b405-80e731456f01 
+(
+
+https://github.com/user-attachments/assets/55437769-8eef-42a2-ba0b-9a029d1b4e31
+
+)
 **Recorded On Emulator, will be smoother and faster on Your Physical Device**
 ---
 
