@@ -4,7 +4,8 @@
 
 
 
-📺 **[Demo Video](https://github.com/user-attachments/assets/fcbd2fc4-0033-45d2-b405-80e731456f01)**  
+📺 **Demo Video**
+https://github.com/user-attachments/assets/fcbd2fc4-0033-45d2-b405-80e731456f01 
 **Recorded On Emulator, will be smoother and faster on Your Physical Device**
 ---
 
